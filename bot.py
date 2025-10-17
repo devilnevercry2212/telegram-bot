@@ -55,14 +55,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     print(f"Получено сообщение от {chat_id}: {update.message.text}")
-    
+
     # Если пользователь не в активном сценарии, но есть завершенная заявка
     if chat_id not in user_data:
         if chat_id in completed_applications:
             # Добавляем сообщение к завершенной заявке
             completed_applications[chat_id]["additional_messages"].append(update.message.text)
             print(f"Добавлено дополнительное сообщение от {chat_id}: {update.message.text}")
-            
+
             # Редактируем существующее сообщение в канале
             try:
                 additional_text = "\n".join([f"• {msg}" for msg in completed_applications[chat_id]["additional_messages"]])
@@ -74,7 +74,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     f"Время: {completed_applications[chat_id]['time']}\n"
                     f"Дополнительные сообщения:\n{additional_text}"
                 )
-                
+
                 # Редактируем сообщение, если есть его ID
                 if chat_id in channel_message_ids:
                     await context.bot.edit_message_text(
@@ -90,7 +90,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     print(f"Новая заявка отправлена в канал {CHAT_ID}")
             except Exception as e:
                 print(f"Ошибка редактирования заявки в канале: {e}")
-        
+
         print(f"Сценарий для {chat_id} не активен, отправляю финальное сообщение")
         await update.message.reply_text(
             "Спасибо, мы уже получили вашу заявку, теперь в рабочее время с 12:00 до 17:00 по мск "
@@ -137,7 +137,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             print(f"Заявка отправлена в канал {CHAT_ID}, ID сообщения: {sent_message.message_id}")
         except Exception as e:
             print(f"Ошибка отправки в канал: {e}")
-        
+
         # Сохраняем данные заявки для сбора дополнительных сообщений
         completed_applications[chat_id] = {
             "name": user_data[chat_id]["name"],
@@ -146,13 +146,13 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "time": update.message.date,
             "additional_messages": []
         }
-        
+
         # Отправляем финальное сообщение
         await update.message.reply_text(
             "Ну все, KAIF! Ожидай обратной связи, в рабочее время с 12:00 до 17:00 по мск, "
             "мы свяжемся с вами, до скорых свершений! А если еще есть что сказать, смело пиши здесь"
         )
-        
+
         # Очищаем данные после завершения сценария
         del user_data[chat_id]
 
@@ -164,11 +164,11 @@ async def webhook_main():
         application = Application.builder().token(TOKEN).build()
         application.add_handler(CommandHandler("start", start))
         application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-        
+
         # Настройка webhook
         await application.bot.set_webhook(url=WEBHOOK_URL)
         print(f"Webhook установлен: {WEBHOOK_URL}")
-        
+
         # Запуск webhook сервера
         await application.run_webhook(
             listen="0.0.0.0",
@@ -188,7 +188,7 @@ def main():
         application.add_handler(CommandHandler("start", start))
         application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
         print("Бот запущен, ожидаю команду /start")
-        
+
         # Выбор режима запуска
         if os.getenv('USE_WEBHOOK', 'false').lower() == 'true':
             # Webhook режим для продакшена
