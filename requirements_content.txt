@@ -1,0 +1,3 @@
+# Содержимое файла requirements.txt - скопируйте это в новый файл requirements.txt на GitHub
+
+python-telegram-bot==20.7
