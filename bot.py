@@ -1,21 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Telegram Bot для сбора заявок с поддержкой webhook и polling
-
-РЕЖИМЫ ЗАПУСКА:
-1. Локальное тестирование (polling):
-   python bot.py
-
-2. Продакшен (webhook):
-   export USE_WEBHOOK=true
-   export WEBHOOK_URL=https://your-domain.com/webhook
-   export PORT=8443
-   python bot.py
-
-ТРЕБОВАНИЯ:
-- pip install python-telegram-bot
-- Для webhook: HTTPS сервер с SSL сертификатом
-- Для продакшена: Heroku, Railway, или другой хостинг с поддержкой webhook
 """
 import sys
 import os
@@ -29,9 +14,9 @@ TOKEN = '8467184939:AAGsFjLQAHcMTfKsTAnbPTBC0YSlaQkGxpg'
 CHAT_ID = '-1003052947504'  # Канал "Франшизы теперь в телеграм"
 
 # Webhook конфигурация (для продакшена)
-WEBHOOK_URL = os.getenv('WEBHOOK_URL', 'https://your-domain.com/webhook')  # Замените на ваш URL
-WEBHOOK_PORT = int(os.getenv('PORT', 8443))  # Порт для webhook
-WEBHOOK_PATH = '/webhook'  # Путь для webhook
+WEBHOOK_URL = os.getenv('WEBHOOK_URL', 'https://telegram-bot-1-95wo.onrender.com/webhook')
+WEBHOOK_PORT = int(os.getenv('PORT', 10000))
+WEBHOOK_PATH = '/webhook'
 
 # Состояния пользователя (для сохранения данных)
 user_data = {}
@@ -189,8 +174,6 @@ def main():
         application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
         print("Бот запущен, ожидаю команду /start")
 
-        # Выбор режима запуска
-               # Выбор режима запуска
         # Принудительно используем webhook на Render
         import asyncio
         asyncio.run(webhook_main())
@@ -200,4 +183,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
