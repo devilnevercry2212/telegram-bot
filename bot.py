@@ -190,19 +190,14 @@ def main():
         print("Бот запущен, ожидаю команду /start")
 
         # Выбор режима запуска
-        if os.getenv('USE_WEBHOOK', 'false').lower() == 'true':
-            # Webhook режим для продакшена
-            import asyncio
-            asyncio.run(webhook_main())
-        else:
-            # Polling режим для локального тестирования
-            print("Используется polling режим (для продакшена установите USE_WEBHOOK=true)")
-            # Исправление для совместимости с новой версией
-            import asyncio
-            asyncio.run(application.run_polling())
+               # Выбор режима запуска
+        # Принудительно используем webhook на Render
+        import asyncio
+        asyncio.run(webhook_main())
     except Exception as e:
         print(f"Ошибка при запуске бота: {e}")
         sys.exit(1)
 
 if __name__ == '__main__':
     main()
+
