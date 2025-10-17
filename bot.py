@@ -4,6 +4,7 @@ Telegram Bot для сбора заявок с поддержкой webhook и p
 """
 import sys
 import os
+import asyncio
 from telegram import Update
 from telegram.ext import Application, MessageHandler, ContextTypes, CommandHandler, filters
 
@@ -141,14 +142,14 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Очищаем данные после завершения сценария
         del user_data[chat_id]
 
-# Функция для webhook (для продакшена)
-async def webhook_main():
-    """Запуск бота с webhook для продакшена"""
+# Запуск бота
+async def main():
     try:
-        print("Запуск бота @KaifTime_Franch_bot с webhook...")
+        print("Запуск бота @KaifTime_Franch_bot...")
         application = Application.builder().token(TOKEN).build()
         application.add_handler(CommandHandler("start", start))
         application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+        print("Бот запущен, ожидаю команду /start")
 
         # Настройка webhook
         await application.bot.set_webhook(url=WEBHOOK_URL)
@@ -162,19 +163,8 @@ async def webhook_main():
             url_path=WEBHOOK_PATH
         )
     except Exception as e:
-        print(f"Ошибка при запуске webhook: {e}")
-        sys.exit(1)
-
-# Запуск бота
-def main():
-    try:
-        print("Запуск бота @KaifTime_Franch_bot...")
-        # Принудительно используем webhook на Render
-        import asyncio
-        asyncio.run(webhook_main())
-    except Exception as e:
         print(f"Ошибка при запуске бота: {e}")
         sys.exit(1)
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
