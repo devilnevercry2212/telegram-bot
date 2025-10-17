@@ -169,11 +169,6 @@ async def webhook_main():
 def main():
     try:
         print("Запуск бота @KaifTime_Franch_bot...")
-        application = Application.builder().token(TOKEN).build()
-        application.add_handler(CommandHandler("start", start))
-        application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-        print("Бот запущен, ожидаю команду /start")
-
         # Принудительно используем webhook на Render
         import asyncio
         asyncio.run(webhook_main())
